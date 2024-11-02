@@ -1,10 +1,11 @@
 .model small
 .data
   enter db 0ah, 0dh, "$"
-  is_sorted db 1h
-  count db 0h
+  msg1 db "Enter the array elements: $"
+  msg2 db "Sorted array: $"
+  is_sorted db ?
   key db ?
-  arr db 39h, 37h, 36h, 34h, 33h, 31h, 30h, 24h
+  arr db ?
 .code
   PRINTS MACRO str
       LEA dx, str
@@ -26,6 +27,16 @@
   MOV ax, @data ; set DS to point to the data segment
   MOV ds, ax    ; DS cannot be accessed directly
 
+  PRINTS msg1
+  MOV si, 0h
+GET_ARRAY_LOOP:
+  SCANC
+  MOV arr[si], al
+  CMP al, "$"
+  JE INSERTION_SORT
+  INC si
+  JMP GET_ARRAY_LOOP
+
 INSERTION_LOOP:
   MOV is_sorted, 1h
   MOV si, 01h
@@ -33,44 +44,40 @@ INSERTION_SORT:
   MOV cl, arr[si]
   CMP cl, "$"
   JE CHECK_IF_SORTED
-  MOV bp, si
   MOV cl, arr[si]
   MOV key, cl
+  MOV bp, si
 COMPARE:
   MOV cl, key
-  CMP cl, arr[si-1]
+  CMP cl, arr[bp-1]
   JL MAKE_ROOM
   JMP INSERT_KEY
 END_INSERTION_LOOP:
   INC si
   JMP INSERTION_SORT
 
-INSERT_KEY:
-  MOV cl, key
-  MOV arr[si], cl
-  JMP END_INSERTION_LOOP
-
 CHECK_IF_SORTED:
-  MOV cl, is_sorted
-  CMP cl, 1h
+  CMP is_sorted, 1h
   JE PRINT_ARRAY
   JMP INSERTION_LOOP
 
 MAKE_ROOM:
-  MOV bh, arr[si-1]
-  MOV arr[si], bh
   MOV is_sorted, 0h
-  DEC si
-  CMP si, 0h
-  JE INSERT_KEY_AND_BREAK
+  MOV bh, arr[bp-1]
+  MOV arr[bp], bh
+  DEC bp
+  CMP bp, 0h
+  JE INSERT_KEY
   JMP COMPARE
-INSERT_KEY_AND_BREAK:
+
+INSERT_KEY:
   MOV cl, key
-  MOV arr[si], cl
-  MOV si, bp
+  MOV arr[bp], cl
   JMP END_INSERTION_LOOP
 
 PRINT_ARRAY:
+  PRINTS enter
+  PRINTS msg2 
   MOV si, 0h
 PRINT_ARRAY_LOOP:
   PRINTC arr[si]
@@ -79,6 +86,7 @@ PRINT_ARRAY_LOOP:
   JNE PRINT_ARRAY_LOOP
 
 EXIT:
-  MOV ah, 4ch
+  MOV ah, 4ch ; return control to OS
   INT 21h
 end
+
