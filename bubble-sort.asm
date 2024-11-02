@@ -74,6 +74,6 @@ PRINT_ARRAY_LOOP:
   JNE PRINT_ARRAY_LOOP
 
 EXIT:
-  MOV ah, 4ch
+  MOV ah, 4ch ; return control to OS
   INT 21h
 end
