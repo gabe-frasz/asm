@@ -7,20 +7,20 @@
   arr db ?
 .code
   PRINTS MACRO str
-      LEA dx, str
-      MOV ah, 09h
-      INT 21h
+    LEA dx, str
+    MOV ah, 09h
+    INT 21h
   ENDM
 
   PRINTC MACRO char
-      MOV dl, char
-      MOV ah, 02h
-      INT 21h
+    MOV dl, char
+    MOV ah, 02h
+    INT 21h
   ENDM
 
   SCANC MACRO
-      mov ah, 01h
-      int 21h
+    MOV ah, 01h
+    INT 21h
   ENDM
 
   MOV ax, @data ; set DS to point to the data segment
