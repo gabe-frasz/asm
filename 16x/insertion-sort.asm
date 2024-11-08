@@ -46,10 +46,10 @@ INSERTION_SORT:
   JE CHECK_IF_SORTED
   MOV cl, arr[si]
   MOV key, cl
-  MOV bp, si
+  MOV bx, si
 COMPARE:
   MOV cl, key
-  CMP cl, arr[bp-1]
+  CMP cl, arr[bx-1]
   JL MAKE_ROOM
   JMP INSERT_KEY
 END_INSERTION_LOOP:
@@ -63,16 +63,16 @@ CHECK_IF_SORTED:
 
 MAKE_ROOM:
   MOV is_sorted, 0h
-  MOV bh, arr[bp-1]
-  MOV arr[bp], bh
-  DEC bp
-  CMP bp, 0h
+  MOV ah, arr[bx-1]
+  MOV arr[bx], ah
+  DEC bx
+  CMP bx, 0h
   JE INSERT_KEY
   JMP COMPARE
 
 INSERT_KEY:
   MOV cl, key
-  MOV arr[bp], cl
+  MOV arr[bx], cl
   JMP END_INSERTION_LOOP
 
 PRINT_ARRAY:
