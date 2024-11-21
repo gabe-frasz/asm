@@ -2,7 +2,6 @@
 .data
   enter db 0ah, 0dh, "$"
   arr db "87253445$"
-  key db ?
 .code
   PRINTS MACRO str
     LEA dx, str
@@ -18,7 +17,6 @@ INSERTION_LOOP:
   MOV cl, arr[si]
   CMP cl, "$"
   JE EXIT
-  MOV key, cl
   MOV bx, si
 COMPARE:
   CMP cl, arr[bx-1]
